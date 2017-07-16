@@ -55,6 +55,7 @@ public class MainFragment extends Fragment {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
+        //initialize View's
         getAllBtn = (Button) view.findViewById(R.id.get_all_btn);
         getOneBtn = (Button) view.findViewById(R.id.get_one_btn);
         deleteOneBtn = (Button) view.findViewById(R.id.delete_one_btn);
@@ -66,18 +67,22 @@ public class MainFragment extends Fragment {
         firstNameET = (EditText) view.findViewById(R.id.first_name_ET);
         lastNameET = (EditText) view.findViewById(R.id.last_name_ET);
 
+        //button that will represent all drivers(include their cars) on TextView
         getAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //method that processes data
                 getDriversList();
             }
         });
 
+        //button that represent all drivers(include their cars) on TextView
         getOneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String id = getOneET.getText().toString().trim();
                 if (!TextUtils.isEmpty(id)) {
+                    //method that processes data
                     getOneById(id);
                 } else {
                     Toast.makeText(getActivity(), "Input drivers id",
@@ -85,12 +90,13 @@ public class MainFragment extends Fragment {
                 }
             }
         });
-
+        //button that delete driver(include cars) by ID
         deleteOneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String id = getOneET.getText().toString().trim();
                 if (!TextUtils.isEmpty(id)) {
+                    //methods that processes data
                     carsDeleted();
                     deleteById(id);
                 } else {
@@ -110,6 +116,7 @@ public class MainFragment extends Fragment {
                     driversModel.setFirstName(firstName);
                     driversModel.setLastName(lastName);
                     driversModel.setCars(null);
+                    //method that processes data
                     sendPost(driversModel);
                 } else {
                     Toast.makeText(getActivity(), "Input your first and last name",

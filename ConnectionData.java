@@ -10,7 +10,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Created by cubru on 15.07.2017.
  */
-
+//To issue network requests to a RESTful API with Retrofit, we need to create an
+// instance using the Retrofit Builder class and configure it with a base URL.
 public class ConnectionData {
 
     private static DriversAPI driversAPI;

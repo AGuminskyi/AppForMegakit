@@ -10,6 +10,7 @@ import com.android.huminskiy1325.appformegakit.Model.Car;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+// Model of drivers. Mapped by JSON- file
 public class DriversModel {
 
     @SerializedName("id")

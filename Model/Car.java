@@ -6,7 +6,7 @@ package com.android.huminskiy1325.appformegakit.Model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-
+// Model of Car. Mapped by JSON- file
 public class Car {
 
     @SerializedName("id")

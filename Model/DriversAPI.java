@@ -13,6 +13,7 @@ import retrofit2.http.Path;
  * Created by cubru on 15.07.2017.
  */
 
+//This interface contains methods we are going to use to execute HTTP requests
 public interface DriversAPI {
 
     @GET("drivers/")
