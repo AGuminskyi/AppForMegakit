@@ -12,10 +12,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,70 +27,52 @@ public class MainFragment extends Fragment {
     public DriversAPI driversAPI;
     public static DriversModel modelDriver = null;
 
+    View view;
     Button getAllBtn;
     Button getOneBtn;
     Button deleteOneBtn;
+    Button postBtn;
     TextView informationTV;
     EditText getOneET;
+    EditText firstNameET;
+    EditText lastNameET;
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        driversAPI = ConnectionData.getInstance(getActivity().getApplicationContext());
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        driversAPI = ConnectionData.getInstance(getActivity().getApplicationContext());
+        view = inflater.inflate(R.layout.fragment_main, container, false);
 
-
-        View view = inflater.inflate(R.layout.fragment_main, container, false);
         getAllBtn = (Button) view.findViewById(R.id.get_all_btn);
         getOneBtn = (Button) view.findViewById(R.id.get_one_btn);
         deleteOneBtn = (Button) view.findViewById(R.id.delete_one_btn);
-        informationTV = (TextView) view.findViewById(R.id.informationTV);
-        getOneET = (EditText) view.findViewById(R.id.get_id_ET);
+        postBtn = (Button) view.findViewById(R.id.post_btn);
 
+        informationTV = (TextView) view.findViewById(R.id.informationTV);
+
+        getOneET = (EditText) view.findViewById(R.id.get_id_ET);
+        firstNameET = (EditText) view.findViewById(R.id.first_name_ET);
+        lastNameET = (EditText) view.findViewById(R.id.last_name_ET);
 
         getAllBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                driversAPI.getDriversList().enqueue(new Callback<List<DriversModel>>() {
-                    @Override
-                    public void onResponse(Call<List<DriversModel>> call, Response<List<DriversModel>> response) {
-                        if (response.isSuccessful()) {
-                            List<DriversModel> modelList = response.body();
-                            informationTV.setText(modelList.toString());
-                        } else {
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<List<DriversModel>> call, Throwable t) {
-                        Log.d("NEW_TAG", t.getMessage());
-                        Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                getDriversList();
             }
         });
 
         getOneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                driversAPI.getDriver(getOneET.getText().toString()).enqueue(new Callback<DriversModel>() {
-                    @Override
-                    public void onResponse(Call<DriversModel> call, Response<DriversModel> response) {
-                        if (response.isSuccessful()) {
-                            modelDriver = response.body();
-                            informationTV.setText(modelDriver.toString());
-                        } else {
-
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<DriversModel> call, Throwable t) {
-                        Log.d("NEW_TAG", t.getMessage());
-                        Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                String id = getOneET.getText().toString().trim();
+                getOneById(id);
             }
         });
 
@@ -100,30 +80,107 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 carsDeleted();
-                driversAPI.deleteDriver(getOneET.getText().toString().trim()).enqueue(new Callback<Object>() {
-                    @Override
-                    public void onResponse(Call<Object> call, Response<Object> response) {
-                        if (response.isSuccessful()) {
-                            informationTV.setText("Deleted");
-                        } else {
+                String id = getOneET.getText().toString().trim();
+                deleteById(id);
+            }
+        });
 
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<Object> call, Throwable t) {
-                        Log.d("NEW_TAG", t.getMessage());
-                        Toast.makeText(getActivity(), "An error occurred during networking",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
+        postBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String firstName = firstNameET.getText().toString().trim();
+                String lastName = lastNameET.getText().toString().trim();
+                DriversModel driversModel = new DriversModel();
+                driversModel.setFirstName(firstName);
+                driversModel.setLastName(lastName);
+                driversModel.setCars(null);
+                sendPost(driversModel);
             }
         });
 
         return view;
     }
 
-    private void carsDeleted() {
+    public void getDriversList() {
+        driversAPI.getDriversList().enqueue(new Callback<List<DriversModel>>() {
+            @Override
+            public void onResponse(Call<List<DriversModel>> call, Response<List<DriversModel>> response) {
+                if (response.isSuccessful()) {
+                    List<DriversModel> modelList = response.body();
+                    informationTV.setText(modelList.toString());
+                } else {
+                    informationTV.setText("Error happend");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DriversModel>> call, Throwable t) {
+                Log.d("NEW_TAG", t.getMessage());
+                Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void getOneById(String id) {
+        driversAPI.getDriver(id).enqueue(new Callback<DriversModel>() {
+            @Override
+            public void onResponse(Call<DriversModel> call, Response<DriversModel> response) {
+                if (response.isSuccessful()) {
+                    modelDriver = response.body();
+                    informationTV.setText(modelDriver.toString());
+                } else {
+                    informationTV.setText("Error happend");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<DriversModel> call, Throwable t) {
+                Log.d("NEW_TAG", t.getMessage());
+                Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void deleteById(String id) {
+        driversAPI.deleteDriver(id).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    informationTV.setText("Deleted");
+                } else {
+                    informationTV.setText("Error happend");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Log.d("NEW_TAG", t.getMessage());
+                Toast.makeText(getActivity(), "An error occurred during networking",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void sendPost(DriversModel driversModel) {
+        driversAPI.createDriver(driversModel).enqueue(new Callback<Object>() {
+            @Override
+            public void onResponse(Call<Object> call, Response<Object> response) {
+                if (response.isSuccessful()) {
+                    informationTV.setText("Created");
+                } else {
+                    informationTV.setText("Error happend");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Object> call, Throwable t) {
+                Toast.makeText(getActivity(), "An error occurred during networking",
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void carsDeleted() {
         if (modelDriver == null) {
             Toast.makeText(getActivity(), "At first you should to know Drivers List",
                     Toast.LENGTH_SHORT).show();
