@@ -1,10 +1,12 @@
-package com.android.huminskiy1325.appformegakit;
+package com.android.huminskiy1325.appformegakit.Model;
 
 /**
  * Created by cubru on 15.07.2017.
  */
 
 import java.util.List;
+
+import com.android.huminskiy1325.appformegakit.Model.Car;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -57,11 +59,10 @@ public class DriversModel {
 
     @Override
     public String toString() {
-        return "DriversModel{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", cars=" + cars +
-                '}';
+        return "\nDriversModel:" +
+                "id= " + id +
+                ", firstName= '" + firstName + '\'' +
+                ", lastName= '" + lastName + '\'' +
+                ", cars= " + cars;
     }
 }

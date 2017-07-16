@@ -1,4 +1,4 @@
-package com.android.huminskiy1325.appformegakit;
+package com.android.huminskiy1325.appformegakit.Model;
 
 /**
  * Created by cubru on 15.07.2017.
@@ -56,11 +56,9 @@ public class Car {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "id=" + id +
-                ", mark='" + mark + '\'' +
-                ", model='" + model + '\'' +
-                ", manufactureYear=" + manufactureYear +
-                '}';
+        return "\nid= " + id +
+                ", mark= '" + mark + '\'' +
+                ", model= '" + model + '\'' +
+                ", manufactureYear=" + manufactureYear;
     }
 }

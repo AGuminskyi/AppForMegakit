@@ -3,6 +3,7 @@ package com.android.huminskiy1325.appformegakit;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.android.huminskiy1325.appformegakit.Model.Car;
+import com.android.huminskiy1325.appformegakit.Model.DriversAPI;
+import com.android.huminskiy1325.appformegakit.Model.DriversModel;
+
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,7 +50,8 @@ public class MainFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -72,16 +77,26 @@ public class MainFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 String id = getOneET.getText().toString().trim();
-                getOneById(id);
+                if (!TextUtils.isEmpty(id)) {
+                    getOneById(id);
+                } else {
+                    Toast.makeText(getActivity(), "Input drivers id",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
         deleteOneBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                carsDeleted();
                 String id = getOneET.getText().toString().trim();
-                deleteById(id);
+                if (!TextUtils.isEmpty(id)) {
+                    carsDeleted();
+                    deleteById(id);
+                } else {
+                    Toast.makeText(getActivity(), "Input drivers id",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -90,11 +105,16 @@ public class MainFragment extends Fragment {
             public void onClick(View v) {
                 String firstName = firstNameET.getText().toString().trim();
                 String lastName = lastNameET.getText().toString().trim();
-                DriversModel driversModel = new DriversModel();
-                driversModel.setFirstName(firstName);
-                driversModel.setLastName(lastName);
-                driversModel.setCars(null);
-                sendPost(driversModel);
+                if (!TextUtils.isEmpty(firstName) && !TextUtils.isEmpty(lastName)) {
+                    DriversModel driversModel = new DriversModel();
+                    driversModel.setFirstName(firstName);
+                    driversModel.setLastName(lastName);
+                    driversModel.setCars(null);
+                    sendPost(driversModel);
+                } else {
+                    Toast.makeText(getActivity(), "Input your first and last name",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -116,7 +136,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onFailure(Call<List<DriversModel>> call, Throwable t) {
                 Log.d("NEW_TAG", t.getMessage());
-                Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "An error occurred during networking",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -136,7 +157,8 @@ public class MainFragment extends Fragment {
             @Override
             public void onFailure(Call<DriversModel> call, Throwable t) {
                 Log.d("NEW_TAG", t.getMessage());
-                Toast.makeText(getActivity(), "An error occurred during networking", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "An error occurred during networking",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -182,7 +204,7 @@ public class MainFragment extends Fragment {
 
     public void carsDeleted() {
         if (modelDriver == null) {
-            Toast.makeText(getActivity(), "At first you should to know Drivers List",
+            Toast.makeText(getActivity(), "At first you should to know Drivers List of one person",
                     Toast.LENGTH_SHORT).show();
         } else {
             List<Car> carList = modelDriver.getCars();
