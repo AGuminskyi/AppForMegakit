@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ConnectionData {
 
     private static DriversAPI driversAPI;
-    private static String BASE_URL = "http://192.168.1.105:8099/";
+    private static String BASE_URL = "http://192.168.1.104:8099/";
 
     public static DriversAPI getInstance(Context context){
         if(driversAPI == null){
